@@ -1,0 +1,39 @@
+<?php
+
+namespace ZfDeals;
+
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface
+{
+    public function getConfig()
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                ),
+            ),
+        );
+    }
+    
+    public function init(\Zend\ModuleManager\ModuleManager $moduleManager)
+    {
+        $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
+        
+        $sharedEvents->attach(
+                'ZfDeals\Controller\AdminController',
+                'dispatch',
+                function($e) {
+                    $controller = $e->getTarget();
+                    $controller->layout('zf-deals/layout/admin');
+                },
+                100);
+    }
+}

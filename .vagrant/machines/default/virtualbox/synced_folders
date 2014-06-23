@@ -1,0 +1,1 @@
+{"virtualbox":{"vagrant-root":{"id":"vagrant-root","owner":"vagrant","group":"www-data","guestpath":"/vagrant","hostpath":"C:/Users/Rafa/Documents/GitHub/zfDealsApp","disabled":false},"v-csc-1":{"id":"v-csc-1","guestpath":"/tmp/vagrant-chef-3/chef-solo-1/cookbooks","hostpath":"C:/Users/Rafa/Documents/GitHub/zfDealsApp/vendor/zfb/zfb-vm/cookbooks","disabled":false}}}
