@@ -10,9 +10,13 @@ namespace ZfDeals\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Form\Annotation\AnnotationBuilder;
 
 class AdminController extends AbstractActionController
 {
+    private $productAddForm;
+    private $productMapper;
+
     public function indexAction()
     {
         return new ViewModel();
@@ -20,26 +24,26 @@ class AdminController extends AbstractActionController
     
     public function addProductAction()
     {
-        $form = new \ZfDeals\Form\ProductAdd();
-        
+        $form = $this->productAddForm;
+
         if ($this->getRequest()->isPost()) {
-            $form->setHydrator(new \Zend\Stdlib\Hydrator\Reflection());
-            $form->bind(new \ZfDeals\Entity\Product());
             $form->setData($this->getRequest()->getPost());
-            
+
             if ($form->isValid()) {
-                $newEntity = $form->getData();
-                $mapper = $this->getServiceLocator()->get('ZfDeals\Mapper\Product');
-                
-                $mapper->insert($newEntity);
-                $form = new \ZfDeals\Form\ProductAdd();
-                
-                return new ViewModel(
+                $model = new ViewModel(
                     array(
-                        'form' => $form,
-                        'success' => true
+                        'form' => $form
                     )
                 );
+
+                try {
+                    $this->productMapper->insert($form->getData());
+                    $model->setVariable('success', true);
+                } catch (\Exception $e) {
+                    $model->setVariable('insertError', true);
+                }
+
+                return $model;
             } else {
                 return new ViewModel(
                     array(
